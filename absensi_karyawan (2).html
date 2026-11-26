@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Absensi Karyawan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6f5;--card:#fff;--ink:#12261f;--mut:#5d6f68;--line:#dbe3df;--ac:#0d7a68;--acw:#fff;--warn:#a85f00;--bad:#b3261e;--ok:#0d7a68;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a17;--card:#16241f;--ink:#e6f0ec;--mut:#93a8a0;--line:#26382f;--ac:#3cc9ae;--acw:#06201a;--warn:#f0b44c;--bad:#ff8a80;--ok:#3cc9ae;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1a17;--card:#16241f;--ink:#e6f0ec;--mut:#93a8a0;--line:#26382f;--ac:#3cc9ae;--acw:#06201a;--warn:#f0b44c;--bad:#ff8a80;--ok:#3cc9ae;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 Figtree,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:28px;font-weight:800;margin:0 0 4px;letter-spacing:-.02em}
+h2{font-size:19px;font-weight:800;margin:0 0 12px}
+p{margin:0 0 12px;color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+label.f{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+input,textarea,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,.btn:focus-within{outline:3px solid var(--ac);outline-offset:2px}
+button,.btn{display:inline-block;padding:10px 16px;border:0;border-radius:10px;background:var(--ac);color:var(--acw);font:600 15px Figtree,system-ui,sans-serif;cursor:pointer}
+button.ghost,.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button.del{background:transparent;color:var(--bad);border:1px solid var(--line);padding:6px 10px}
+button.sm{padding:6px 10px;font-size:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.row>*{flex:1 1 160px}.row>button{flex:0 0 auto}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.cam{background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:10px;text-align:center}
+.cam video,.cam img{width:100%;max-width:360px;aspect-ratio:4/3;object-fit:cover;border-radius:10px;background:#000;display:block;margin:0 auto 10px;transform:scaleX(-1)}
+.cam img{transform:none}
+.cam [hidden]{display:none}
+.camact{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.note{font-size:13px;color:var(--mut);background:var(--bg);border-left:3px solid var(--warn);padding:8px 10px;border-radius:6px;margin:8px 0}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin:14px 0;padding-bottom:4px}
+.tabs button{background:transparent;color:var(--ink);border:1px solid var(--line);white-space:nowrap}
+.tabs button.on{background:var(--ac);color:var(--acw);border-color:var(--ac)}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.clock{font:800 22px Figtree,sans-serif}.clock small{display:block;font:400 13px Figtree,sans-serif;color:var(--mut)}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:20px}
+.modes button{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:28px 20px;text-align:left}
+.modes button:hover{border-color:var(--ac)}
+.modes b{display:block;font-size:22px;font-weight:800;margin-bottom:4px;color:var(--ac)}.modes span{font-weight:400;color:var(--mut)}
+.narrow{max-width:420px}
+.res{margin-top:14px;padding:14px;border-radius:12px;border:1px solid var(--line)}
+.res.ok{border-color:var(--ok)}.res.bad{border-color:var(--bad)}
+.res b.big{display:block;font-size:22px}
+.res.bad b.big{color:var(--bad)}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{font-weight:600;color:var(--mut)}td.n,th.n{text-align:right}
+.bukti{width:36px;height:36px;border-radius:6px;object-fit:cover;vertical-align:middle;margin-right:6px}
+.bal{font-size:30px;font-weight:800;color:var(--ac);display:block}
+tr.batal td{color:var(--mut);text-decoration:line-through}tr.batal td:last-child{text-decoration:none}
+tfoot td{font-weight:800}
+.emp{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.emp img{width:52px;height:52px;border-radius:50%;object-fit:cover}.emp div{flex:1 1 180px;min-width:0}
+.emp small{color:var(--mut);display:block;overflow-wrap:anywhere}
+label.chk{display:flex;gap:8px;align-items:center;margin-top:14px;font-size:14px}label.chk input{width:auto}
+.hid{display:none!important}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;max-width:90%;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9}
+#toast.on{opacity:1}
+.empty{color:var(--mut);padding:12px 0}
+.gb1{fill:var(--ac)}.gb2{fill:var(--warn)}.gt{fill:var(--mut);font:12px Figtree,sans-serif}.gl{stroke:var(--line)}
+.leg{display:flex;gap:14px;font-size:13px;color:var(--mut);margin:6px 0}.leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+.cam select{max-width:360px;margin:8px auto 0;display:block}
+@media print{body.pbar *{visibility:hidden}body.pbar #fBar,body.pbar #fBar *{visibility:visible}body.pbar #fBar{position:absolute;left:0;top:0;border:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- PILIH MODE -->
+<section id="home" class="page">
+  <h1>Absensi karyawan</h1>
+  <p>Pilih mode untuk melanjutkan.</p>
+  <div class="clock"><span class="clk"></span><small class="dt"></small></div>
+  <div class="modes">
+    <button type="button" id="mKary"><b>Karyawan</b><span>Absen masuk dengan wajah &amp; lokasi, absen pulang dengan barcode.</span></button>
+    <button type="button" id="mAdm"><b>Admin</b><span>Kelola karyawan, jam kerja, gaji, dan rekap. Perlu PIN.</span></button>
+  </div>
+</section>
+
+<!-- LOGIN ADMIN -->
+<section id="login" class="page hid">
+  <form class="card narrow" id="fLogin">
+    <h2 id="loginT">Masuk sebagai admin</h2><p id="loginP"></p>
+    <label class="f" for="pin">PIN admin (4–8 angka)</label><input id="pin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
+    <div id="pin2Box"><label class="f" for="pin2">Ulangi PIN</label><input id="pin2" type="password" inputmode="numeric" maxlength="8" autocomplete="off"></div>
+    <div class="acts"><button type="submit">Masuk</button><button type="button" class="ghost back">Kembali</button></div>
+  </form>
+</section>
+
+<!-- MODE KARYAWAN -->
+<section id="kary" class="page hid">
+  <div class="head">
+    <div><h1>Absensi</h1><p>Mode karyawan</p></div>
+    <div class="clock"><span class="clk"></span><small class="dt"></small></div>
+  </div>
+  <div class="tabs">
+    <button type="button" data-t="masuk" class="on">Absen masuk</button>
+    <button type="button" data-t="pulang">Absen pulang</button>
+    <button type="button" data-t="saya">Riwayat &amp; saldo</button>
+    <button type="button" class="back">Keluar</button>
+  </div>
+  <div id="t-masuk" class="card tab">
+    <h2>Absen masuk</h2><p>Hadapkan wajah ke kamera atau unggah foto wajah. Nama dan jam masuk terdeteksi otomatis.</p>
+    <div class="cam" id="camIn"></div>
+    <label class="chk"><input type="checkbox" id="auto" checked> Mode otomatis: kamera memindai terus dan mencatat absen saat wajah dikenali</label><div id="lokSt" class="note" aria-live="polite"></div>
+    <div class="acts"><button id="goIn" type="button">Verifikasi wajah &amp; absen masuk</button></div>
+    <div id="resIn" aria-live="polite"></div>
+  </div>
+  <div id="t-pulang" class="card tab hid">
+    <h2>Absen pulang</h2><p>Scan barcode kartu karyawan dengan kamera, scanner USB, atau ketik kodenya. Lewat jam pulang kerja, setiap 2 jam penuh dihitung lembur.</p>
+    <div class="cam" id="camOut"></div>
+    <form id="fBc" class="row" style="margin-top:12px"><div><label class="f" for="bc">Kode barcode</label><input id="bc" inputmode="numeric" autocomplete="off" maxlength="12"></div><button type="submit">Absen pulang</button></form>
+    <div id="resOut" aria-live="polite"></div>
+  </div>
+  <div id="t-saya" class="tab hid">
+    <div class="card" id="myAsk">
+      <h2>Riwayat hari kerja &amp; saldo gaji</h2><p>Verifikasi wajah dengan kamera atau unggah foto untuk melihat data Anda.</p>
+      <div class="cam" id="camMe"></div>
+      <div class="acts"><button id="goMe" type="button">Lihat data saya</button></div>
+      <div id="resMe" aria-live="polite"></div>
+    </div>
+    <div id="myData"></div>
+  </div>
+</section>
+
+<!-- MODE ADMIN -->
+<section id="admin" class="page hid">
+  <div class="head">
+    <div><h1>Panel admin</h1><p>Karyawan, jam kerja, gaji, dan rekap.</p></div>
+    <div class="clock"><span class="clk"></span><small class="dt"></small></div>
+  </div>
+  <div class="tabs">
+    <button type="button" data-t="rekap" class="on">Rekap gaji</button>
+    <button type="button" data-t="tf">Transfer gaji</button>
+    <button type="button" data-t="emp">Karyawan</button>
+    <button type="button" data-t="tambah">+ Tambah karyawan</button>
+    <button type="button" data-t="set">Pengaturan</button>
+    <button type="button" class="back">Keluar admin</button>
+  </div>
+
+  <div id="t-rekap" class="tab">
+    <div class="card">
+      <h2>Rekap gaji</h2>
+      <div class="row"><div><label class="f" for="bln">Bulan</label><input type="month" id="bln"></div><button type="button" id="xls">Unduh Excel (.xlsx)</button></div>
+      <div class="tw" id="sum" style="margin-top:14px"></div>
+    </div>
+    <div class="card">
+      <h2>Grafik kehadiran Senin–Sabtu</h2>
+      <div class="row"><div><label class="f" for="grK">Karyawan (bulan mengikuti pilihan di atas)</label><select id="grK"></select></div></div>
+      <div class="leg"><span><i style="background:var(--ac)"></i>Tepat waktu</span><span><i style="background:var(--warn)"></i>Terlambat</span></div>
+      <div id="graf"></div>
+    </div>
+    <div class="card">
+      <div class="head"><h2>Riwayat hari kerja</h2><button type="button" id="addLog" class="ghost sm">+ Absen manual</button></div>
+      <div class="row" style="margin-bottom:12px"><div><label class="f" for="fil">Tampilkan karyawan</label><select id="fil"></select></div></div>
+      <form id="fLog" class="hid">
+        <div class="row">
+          <div><label class="f" for="lEmp">Karyawan</label><select id="lEmp"></select></div>
+          <div><label class="f" for="lTgl">Tanggal masuk</label><input type="date" id="lTgl" required></div>
+          <div><label class="f" for="lIn">Jam masuk</label><input type="time" id="lIn" step="1" required></div>
+          <div><label class="f" for="lOut">Jam pulang</label><input type="time" id="lOut" step="1"></div>
+        </div>
+        <div class="row">
+          <div><label class="f" for="lGaji">Gaji hari itu (Rp)</label><input type="number" id="lGaji" min="0" required></div>
+          <div><label class="f" for="lLb">Lembur per 2 jam hari itu (Rp)</label><input type="number" id="lLb" min="0" required></div>
+        </div>
+        <p style="font-size:13px;margin-top:6px">Jam pulang boleh kosong. Jika lebih awal dari jam masuk, dihitung pulang keesokan harinya.</p>
+        <div class="acts" style="margin:0 0 14px"><button type="submit">Simpan absen</button><button type="button" class="ghost" id="lCancel">Batal</button></div>
+      </form>
+      <div class="tw" id="log"></div>
+    </div>
+  </div>
+
+  <div id="t-tf" class="tab hid">
+    <div class="card">
+      <h2>Saldo gaji karyawan</h2>
+      <p>Saldo = gaji dan lembur dari hari kerja yang sudah absen pulang, dikurangi transfer yang tercatat.</p>
+      <div class="tw" id="saldo"></div>
+    </div>
+    <form class="card hid" id="fTf">
+      <h2 id="tfT">Transfer gaji</h2><p id="tfInfo"></p>
+      <div class="note">Aplikasi ini hanya mencatat. Kirim uangnya lewat bank atau dompet digital, lalu simpan catatannya di sini.</div>
+      <div class="row">
+        <div><label class="f" for="tfJml">Jumlah (Rp)</label><input type="number" id="tfJml" min="1" step="1" required></div>
+        <div><label class="f" for="tfTgl">Tanggal transfer</label><input type="date" id="tfTgl" required></div>
+        <div><label class="f" for="tfCara">Cara bayar</label><select id="tfCara"><option>Transfer bank</option><option>Dompet digital</option><option>Tunai</option></select></div>
+      </div>
+      <label class="f" for="tfRef">Nomor referensi / catatan (opsional)</label><input id="tfRef" maxlength="80">
+      <div class="acts"><button type="submit">Catat transfer</button><button type="button" class="ghost" id="tfCancel">Batal</button></div>
+    </form>
+    <div class="card">
+      <h2>Riwayat transaksi transfer perusahaan</h2>
+      <div class="row"><div><label class="f" for="blnTf">Bulan (kosongkan untuk semua)</label><input type="month" id="blnTf"></div><button type="button" id="xls2">Unduh Excel (.xlsx)</button></div>
+      <div class="tw" id="trx" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <div id="t-emp" class="tab hid">
+    <div class="card hid" id="fBar"></div>
+    <form class="card hid" id="fEmp">
+      <h2>Edit karyawan</h2>
+      <label class="f" for="eNama">Nama lengkap</label><input id="eNama" required>
+      <label class="f" for="eAlamat">Alamat rumah</label><textarea id="eAlamat" rows="2" required></textarea>
+      <div class="row">
+        <div><label class="f" for="eGaji">Gaji per hari kerja (Rp)</label><input type="number" id="eGaji" min="0" required></div>
+        <div><label class="f" for="eLb">Uang lembur per 2 jam (Rp)</label><input type="number" id="eLb" min="0" required></div>
+      </div>
+      <div class="row">
+        <div><label class="f" for="eBank">Bank / dompet digital</label><input id="eBank" maxlength="40" placeholder="mis. BCA"></div>
+        <div><label class="f" for="eRek">Nomor rekening</label><input id="eRek" inputmode="numeric" maxlength="30"></div>
+      </div>
+      <label class="f" for="eShift">Shift kerja</label><select id="eShift"><option value="pagi">Pagi–Siang</option><option value="sore">Sore–Malam</option></select>
+      <div class="acts"><button type="submit">Simpan perubahan</button><button type="button" class="ghost" id="eCancel">Batal</button></div>
+    </form>
+    <div class="card"><h2>Daftar karyawan</h2><div id="empList"></div></div>
+  </div>
+
+  <div id="t-tambah" class="tab hid">
+    <div class="card">
+      <h2>1. Verifikasi wajah</h2>
+      <div class="cam" id="camReg"></div>
+      <div class="row" style="margin-top:10px"><button id="snap" type="button">Ambil &amp; simpan wajah</button><img id="prev" hidden alt="Foto terdaftar" style="width:64px;height:64px;border-radius:50%;object-fit:cover;flex:0 0 64px"></div>
+    </div>
+    <div class="card">
+      <h2>2. Nomor WhatsApp &amp; kode OTP</h2>
+      <label class="f" for="wa">Nomor WhatsApp</label>
+      <div class="row"><input id="wa" inputmode="tel" placeholder="08123456789"><button id="sendOtp" type="button">Kirim OTP</button></div>
+      <div id="otpHint" class="note hid"></div>
+      <label class="f" for="otp">Kode OTP (6 digit)</label>
+      <div class="row"><input id="otp" inputmode="numeric" maxlength="6" placeholder="••••••"><button id="verOtp" type="button" class="ghost">Verifikasi kode</button></div>
+      <p id="otpSt" style="margin:8px 0 0"></p>
+    </div>
+    <div class="card">
+      <h2>3. Data diri &amp; shift</h2>
+      <label class="f" for="nama">Nama lengkap</label><input id="nama">
+      <label class="f" for="alamat">Alamat rumah</label><textarea id="alamat" rows="3"></textarea>
+      <label class="f" for="nShift">Shift kerja</label><select id="nShift"><option value="pagi">Pagi–Siang</option><option value="sore">Sore–Malam</option></select>
+      <div class="row">
+        <div><label class="f" for="nBank">Bank / dompet digital</label><input id="nBank" maxlength="40" placeholder="mis. BCA"></div>
+        <div><label class="f" for="nRek">Nomor rekening</label><input id="nRek" inputmode="numeric" maxlength="30"></div>
+      </div>
+      <div class="acts"><button id="daftar" type="button">Simpan karyawan</button></div>
+    </div>
+  </div>
+
+  <div id="t-set" class="tab hid">
+    <form class="card" id="fSet">
+      <h2>Shift, gaji, potongan &amp; bonus</h2>
+      <div class="row">
+        <div><label class="f" for="sPm">Shift pagi–siang: masuk</label><input type="time" id="sPm" required></div>
+        <div><label class="f" for="sPp">Shift pagi–siang: pulang</label><input type="time" id="sPp" required></div>
+      </div>
+      <div class="row">
+        <div><label class="f" for="sSm">Shift sore–malam: masuk</label><input type="time" id="sSm" required></div>
+        <div><label class="f" for="sSp">Shift sore–malam: pulang</label><input type="time" id="sSp" required></div>
+      </div>
+      <div class="row">
+        <div><label class="f" for="sGaji">Gaji per hari, karyawan baru (Rp)</label><input type="number" id="sGaji" min="0" required></div>
+        <div><label class="f" for="sLb">Lembur per 2 jam, karyawan baru (Rp)</label><input type="number" id="sLb" min="0" required></div>
+      </div>
+      <div class="row">
+        <div><label class="f" for="sPot">Potongan per terlambat (% gaji hari itu)</label><input type="number" id="sPot" min="0" max="100" step=".1" required></div>
+        <div><label class="f" for="sBonus">Bonus tanpa telat 1 bulan (Rp)</label><input type="number" id="sBonus" min="0" required></div>
+        <div><label class="f" for="sMin">Minimal hari masuk untuk bonus</label><input type="number" id="sMin" min="1" max="31" required></div>
+      </div>
+      <p style="font-size:13px;margin-top:6px">Bonus dihitung setelah bulan berakhir: tidak pernah terlambat dan hari masuk mencapai minimal di atas. Jam kerja baru berlaku untuk absen berikutnya. Gaji tiap karyawan diubah di tab Karyawan dan berlaku untuk absen berikutnya.</p>
+      <label class="f" for="sTh">Ketelitian wajah (0.60–0.95)</label><input type="number" id="sTh" min=".6" max=".95" step=".01" required>
+      <label class="f" for="sSim">Waktu uji coba (kosongkan untuk waktu asli)</label><input type="datetime-local" id="sSim">
+      <label class="f" for="sPin">Ganti PIN admin (kosongkan jika tidak diganti)</label><input type="password" inputmode="numeric" maxlength="8" id="sPin" autocomplete="new-password">
+      <div class="acts"><button type="submit">Simpan pengaturan</button><button id="reset" type="button" class="del">Hapus semua data</button></div>
+    </form>
+  </div>
+</section>
+</div>
+<div id="toast" role="status"></div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const mem={};
+const store={get(k,d){if(mem[k]!==undefined)return mem[k];try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));delete mem[k];return true}catch(e){mem[k]=v;return false}}};
+let emps=store.get('emps',[]),logs=store.get('logs',[]),tfs=store.get('tfs',[]);
+let cfg=Object.assign({gaji:150000,lb:50000,jm:'08:00',jp:'17:00',pm:'07:00',pp:'15:00',sm:'15:00',sp:'23:00',pot:.5,bonus:200000,min:20,th:.8,sim:'',pin:''},store.get('cfg',{}));
+/* data dari versi lama: isi gaji per karyawan */
+function kodeBaru(){let k;do k=String(Math.floor(1e5+Math.random()*9e5));while(emps.some(e=>e.kode===k));return k}
+emps.forEach(e=>{if(e.gaji===undefined)e.gaji=cfg.gaji;if(e.lb===undefined)e.lb=cfg.lb;if(!e.kode)e.kode=kodeBaru();if(!e.shift)e.shift='pagi'});
+logs.forEach((l,i)=>{if(!l.id)l.id='l'+i+'-'+l.emp+'-'+l.tgl;if(!l.jm)l.jm=cfg.jm;if(!l.jp)l.jp=cfg.jp;
+  const e=emps.find(x=>x.id===l.emp);if(l.gaji===undefined)l.gaji=e?e.gaji:cfg.gaji;if(l.lb===undefined)l.lb=e?e.lb:cfg.lb});
+const save=()=>{const a=store.set('emps',emps),b=store.set('logs',logs),c=store.set('cfg',cfg),t=store.set('tfs',tfs);if(!(a&&b&&c&&t))setTimeout(()=>toast('Penyimpanan browser tidak tersedia atau penuh. Data hilang jika halaman ditutup.'),0)};
+if(emps.length&&!store.get('emps',[]).every(e=>e.kode&&e.shift))save();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const rp=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+const now=()=>cfg.sim?new Date(cfg.sim):new Date();
+const p2=n=>String(n).padStart(2,'0');
+const ymd=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
+const hm=d=>p2(d.getHours())+':'+p2(d.getMinutes())+':'+p2(d.getSeconds());
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),3500)}
+const empBy=id=>emps.find(e=>e.id===id);
+
+/* Perhitungan terlambat & lembur */
+const at=(tgl,t)=>new Date(tgl+'T'+t);
+function calc(l){const mulai=at(l.tgl,l.jm),selesai=at(l.tgl,l.jp);if(selesai<=mulai)selesai.setDate(selesai.getDate()+1);
+  const late=Math.max(0,Math.floor((new Date(l.masuk)-mulai)/6e4));
+  /* lembur dihitung dari jam pulang, atau dari jam masuk bila datang setelah jam pulang */
+  const awal=Math.max(selesai,new Date(l.masuk));
+  const blok=l.pulang?Math.max(0,Math.floor((new Date(l.pulang)-awal)/72e5)):0;return{late,blok,lembur:blok*l.lb,pot:late>0?Math.round(l.gaji*(l.pot===undefined?cfg.pot:l.pot)/100):0}}
+/* bonus: bulan sudah berakhir, tidak pernah terlambat, hari masuk >= minimal */
+function bonusBln(id,ym){if(ym>=ymd(now()).slice(0,7))return 0;const L=logs.filter(l=>l.emp===id&&l.tgl.startsWith(ym));return new Set(L.map(l=>l.tgl)).size>=cfg.min&&L.every(l=>!calc(l).late)?cfg.bonus:0}
+const bonusAll=id=>[...new Set(logs.filter(l=>l.emp===id).map(l=>l.tgl.slice(0,7)))].reduce((p,m)=>p+bonusBln(id,m),0);
+/* saldo: hanya hari yang sudah absen pulang, dikurangi transfer yang tidak dibatalkan */
+function saldoOf(id){let dapat=0;logs.forEach(l=>{if(l.emp===id&&l.pulang){const c=calc(l);dapat+=l.gaji+c.lembur-c.pot}});dapat+=bonusAll(id);
+  const bayar=tfs.reduce((p,t)=>p+(t.emp===id&&!t.batal?t.jml:0),0);return{dapat,bayar,sisa:dapat-bayar}}
+const rek=x=>[x.bank,x.rek].filter(Boolean).join(' ')||'-';
+const jamKerja=e=>e.shift==='sore'?{jm:cfg.sm,jp:cfg.sp}:{jm:cfg.pm,jp:cfg.pp};
+
+/* Kamera */
+function Cam(el,face='user'){
+  el.innerHTML='<video autoplay playsinline muted hidden></video><img hidden alt="Foto"><div class="camact"><button class="ghost" type="button" data-a="s">Nyalakan kamera</button><label class="btn ghost">Unggah foto<input type="file" accept="image/*" hidden></label></div><select hidden aria-label="Pilih kamera"></select>';
+  const v=$('video',el),im=$('img',el),inp=$('input',el);let st=null,sesi=0;const sel=$('select',el);
+  async function lst(){try{const dv=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');if(dv.length<2){sel.hidden=true;return}const cur=st&&st.getVideoTracks()[0].getSettings().deviceId;sel.innerHTML=dv.map((d,i)=>'<option value="'+esc(d.deviceId)+'">'+esc(d.label||'Kamera '+(i+1))+'</option>').join('');sel.value=cur;sel.hidden=false}catch(e){}}
+  sel.onchange=()=>start(sel.value);
+  function off(){sesi++;if(st)st.getTracks().forEach(t=>t.stop());st=null;v.srcObject=null;v.hidden=true}
+  async function start(id){off();const n=sesi;im.hidden=true;im.removeAttribute('src');
+    try{const s=await navigator.mediaDevices.getUserMedia({video:id?{deviceId:{exact:id}}:{facingMode:face}});if(n!==sesi){s.getTracks().forEach(t=>t.stop());return}st=s;v.srcObject=s;v.hidden=false;lst()}catch(e){if(n===sesi)toast('Kamera tidak bisa dibuka. Periksa izin kamera di browser.')}}
+  $('[data-a=s]',el).onclick=()=>start();
+  inp.onchange=()=>{const f=inp.files[0];if(!f)return;off();im.src=URL.createObjectURL(f);im.hidden=false;inp.value=''};
+  return{start,stop(){off();im.hidden=true;im.removeAttribute('src')},
+    grab(){if(!im.hidden&&im.complete&&im.naturalWidth)return im;if(!v.hidden&&v.videoWidth)return v;return null}};
+}
+const cReg=Cam($('#camReg')),cIn=Cam($('#camIn')),cOut=Cam($('#camOut'),'environment'),cMe=Cam($('#camMe'));
+const stopCams=()=>{[cReg,cIn,cOut,cMe].forEach(c=>c.stop());autoStop();scanStop()};
+const tutupData=()=>{$('#myData').innerHTML='';$('#myAsk').classList.remove('hid')};
+
+/* Pengenalan wajah sederhana (pola piksel). Untuk produksi gunakan face-api.js / layanan face recognition di server. */
+function dims(s){return[s.videoWidth||s.naturalWidth,s.videoHeight||s.naturalHeight]}
+function sig(s){const c=document.createElement('canvas');c.width=c.height=24;const x=c.getContext('2d'),[w,h]=dims(s),z=Math.min(w,h)*.7;
+  x.drawImage(s,(w-z)/2,(h-z)/2,z,z,0,0,24,24);const d=x.getImageData(0,0,24,24).data,a=[];
+  for(let i=0;i<d.length;i+=4)a.push(.3*d[i]+.59*d[i+1]+.11*d[i+2]);
+  const m=a.reduce((p,q)=>p+q,0)/a.length,sd=Math.sqrt(a.reduce((p,q)=>p+(q-m)**2,0)/a.length)||1;return a.map(q=>+((q-m)/sd).toFixed(2))}
+function thumb(s){const c=document.createElement('canvas');c.width=c.height=96;const [w,h]=dims(s),z=Math.min(w,h);c.getContext('2d').drawImage(s,(w-z)/2,(h-z)/2,z,z,0,0,96,96);return c.toDataURL('image/jpeg',.6)}
+const sim=(a,b)=>a.reduce((p,q,i)=>p+q*b[i],0)/a.length;
+function match(f){const s=sig(f);let b=null,m=-1;emps.forEach(e=>{const v=sim(s,e.sig);if(v>m){m=v;b=e}});return b&&m>=cfg.th?b:null}
+
+/* Navigasi */
+let isAdmin=false;
+function page(p){if(p==='admin'&&!isAdmin)p='login';$$('.page').forEach(x=>x.classList.toggle('hid',x.id!==p));stopCams();tutupData();scrollTo(0,0)}
+function tab(sec,t){$$('#'+sec+' .tabs button[data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t===t));$$('#'+sec+' .tab').forEach(x=>x.classList.toggle('hid',x.id!=='t-'+t));
+  stopCams();tutupData();$('#resIn').innerHTML=$('#resOut').innerHTML=$('#resMe').innerHTML='';
+  if(t==='masuk'){cIn.start();autoMasuk();$('#lokSt').textContent='Mengambil lokasi...';lokasi().then(o=>$('#lokSt').textContent='Lokasi aktif: '+lokTxt(o)).catch(x=>$('#lokSt').textContent=x.message)}
+  if(t==='pulang'){cOut.start();scanMulai();$('#bc').focus()}if(t==='saya')cMe.start()
+  if(!isAdmin)return;
+  if(t==='rekap'){$('#fLog').classList.add('hid');rekap()}if(t==='tf'){$('#fTf').classList.add('hid');transfer()}if(t==='emp'){$('#fEmp').classList.add('hid');$('#fBar').classList.add('hid');empList()}if(t==='tambah')resetReg();if(t==='set')fillSet()}
+['kary','admin'].forEach(s=>$$('#'+s+' .tabs button[data-t]').forEach(b=>b.onclick=()=>tab(s,b.dataset.t)));
+$$('.back').forEach(b=>b.onclick=()=>{isAdmin=false;resetReg();['#sum','#log','#empList','#saldo','#trx'].forEach(i=>$(i).innerHTML='');page('home')});
+$('#mKary').onclick=()=>{isAdmin=false;page('kary');tab('kary','masuk')};
+
+/* Login admin. PIN hanya pengunci tampilan, bukan pengamanan server. */
+const hash=s=>{let h=2166136261;for(const c of 'absen:'+s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return(h>>>0).toString(16)};
+const pinOk=p=>/^\d{4,8}$/.test(p);
+$('#mAdm').onclick=()=>{const baru=!cfg.pin;$('#loginT').textContent=baru?'Buat PIN admin':'Masuk sebagai admin';$('#loginP').textContent=baru?'Ini pertama kalinya mode admin dibuka. Buat PIN dan simpan baik-baik.':'Masukkan PIN admin.';
+  $('#pin2Box').classList.toggle('hid',!baru);$('#fLogin').reset();page('login');$('#pin').focus()};
+$('#fLogin').onsubmit=ev=>{ev.preventDefault();const p=$('#pin').value;
+  if(!cfg.pin){if(!pinOk(p))return toast('PIN harus 4–8 angka.');if(p!==$('#pin2').value)return toast('Kedua PIN tidak sama.');cfg.pin=hash(p);save()}
+  else if(hash(p)!==cfg.pin){$('#pin').value='';return toast('PIN salah.')}
+  isAdmin=true;$('#fLogin').reset();page('admin');tab('admin',emps.length?'rekap':'tambah')};
+
+/* Tambah karyawan (admin) */
+let regFace=null,otp=null,otpWa=null,otpOk=false;
+const normWa=n=>{n=n.replace(/[\s-]/g,'');if(!/^(\+?62|0)8\d{7,12}$/.test(n))return null;return n.replace(/^\+?62/,'0')};
+function resetReg(){regFace=null;otp=null;otpOk=false;['#wa','#otp','#nama','#alamat','#nBank','#nRek'].forEach(i=>$(i).value='');$('#nShift').value='pagi';$('#prev').hidden=true;$('#otpHint').classList.add('hid');$('#otpSt').textContent=''}
+$('#snap').onclick=()=>{const f=cReg.grab();if(!f)return toast('Nyalakan kamera atau unggah foto dulu.');
+  const s=sig(f),dup=emps.find(e=>sim(s,e.sig)>=.93);if(dup)return toast('Wajah ini sudah terdaftar atas nama '+dup.nama+'.');
+  regFace={sig:s,foto:thumb(f)};$('#prev').src=regFace.foto;$('#prev').hidden=false;toast('Wajah tersimpan.')};
+$('#sendOtp').onclick=()=>{const n=normWa($('#wa').value);if(!n)return toast('Nomor tidak valid. Contoh: 08123456789');
+  if(emps.some(e=>e.wa===n))return toast('Nomor ini sudah terdaftar.');
+  otp=String(Math.floor(100000+Math.random()*900000));otpWa=n;otpOk=false;$('#otpSt').textContent='';
+  const h=$('#otpHint');h.classList.remove('hid');h.textContent='Mode uji coba: kode OTP untuk '+n+' adalah '+otp+'. Pengiriman ke WhatsApp sungguhan butuh server dan layanan WA gateway (lihat fungsi kirimWA di kode).';kirimWA(n,otp)};
+function kirimWA(nomor,kode){/* Sambungkan ke WA gateway di sini, mis. fetch('https://server-anda/otp',{method:'POST',body:JSON.stringify({nomor,kode})}) */}
+$('#wa').oninput=()=>{otpOk=false;$('#otpSt').textContent=''};
+$('#verOtp').onclick=()=>{if(!otp)return toast('Kirim OTP dulu.');if(normWa($('#wa').value)!==otpWa)return toast('Nomor berubah. Kirim OTP lagi.');
+  otpOk=$('#otp').value.trim()===otp;$('#otpSt').textContent=otpOk?'Nomor terverifikasi.':'Kode salah.';$('#otpSt').style.color=otpOk?'var(--ok)':'var(--bad)'};
+$('#daftar').onclick=()=>{if(!isAdmin)return;const nama=$('#nama').value.trim(),alamat=$('#alamat').value.trim();
+  if(!regFace)return toast('Ambil foto wajah dulu.');if(!otpOk)return toast('Verifikasi nomor WhatsApp dulu.');if(!nama||!alamat)return toast('Nama dan alamat wajib diisi.');
+  emps.push({id:Date.now(),nama,alamat,wa:otpWa,sig:regFace.sig,foto:regFace.foto,gaji:cfg.gaji,lb:cfg.lb,shift:$('#nShift').value,kode:kodeBaru(),bank:$('#nBank').value.trim(),rek:$('#nRek').value.trim()});save();
+  toast('Karyawan '+nama+' tersimpan.');tab('admin','emp');showBar(emps[emps.length-1])};
+
+/* Absen (karyawan) */
+const res=(id,ok,big,sub)=>$(id).innerHTML='<div class="res '+(ok?'ok':'bad')+'"><b class="big">'+esc(big)+'</b>'+sub+'</div>';
+const gagal=id=>res(id,0,'Wajah tidak dikenali','Pastikan wajah terlihat jelas. Jika belum terdaftar, hubungi admin.');
+const tglPanjang=d=>d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+/* absen yang masih terbuka dalam 20 jam terakhir (mendukung pulang lewat tengah malam) */
+/* foto kecil disimpan sebagai bukti, lalu kamera disiapkan untuk orang berikutnya */
+const bukti=f=>({foto:thumb(f),cara:f.tagName==='IMG'?'unggah':'kamera'});
+const terbuka=(id,d)=>logs.filter(l=>l.emp===id&&!l.pulang&&d-new Date(l.masuk)>=0&&d-new Date(l.masuk)<72e6).sort((a,b)=>b.masuk.localeCompare(a.masuk))[0];
+/* Lokasi */
+let lokC=null;
+function lokasi(){return new Promise((ok,no)=>{if(lokC&&Date.now()-lokC.t<2e4)return ok(lokC);if(!navigator.geolocation)return no(new Error('Browser tidak mendukung lokasi.'));
+  navigator.geolocation.getCurrentPosition(p=>{lokC={lat:+p.coords.latitude.toFixed(6),lng:+p.coords.longitude.toFixed(6),acc:Math.round(p.coords.accuracy),t:Date.now()};ok(lokC)},()=>no(new Error('Lokasi tidak bisa diambil. Izinkan akses lokasi di browser.')),{enableHighAccuracy:true,timeout:10000,maximumAge:15000})})}
+const lokTxt=o=>o?'Lokasi '+o.lat+', '+o.lng+' (±'+o.acc+' m)':'';
+const lokO=o=>o?{lat:o.lat,lng:o.lng,acc:o.acc}:undefined;
+const lokA=b=>b&&b.lok?'<a href="https://www.openstreetmap.org/?mlat='+b.lok.lat+'&mlon='+b.lok.lng+'#map=18/'+b.lok.lat+'/'+b.lok.lng+'" target="_blank" rel="noopener"><small>lihat lokasi</small></a> ':'';
+let sibuk=false,cool=0,autoT=null,lastId=null,cnt=0,scT=null,bd=null;
+async function doIn(){if(sibuk)return;sibuk=true;try{
+  if(!emps.length)return res('#resIn',0,'Belum ada karyawan','Hubungi admin untuk didaftarkan.');
+  const f=cIn.grab();if(!f)return toast('Kamera belum siap.');const e=match(f);if(!e)return gagal('#resIn');
+  let lk;try{lk=await lokasi()}catch(x){return res('#resIn',0,'Lokasi diperlukan',esc(x.message))}
+  const d=now(),tgl=ymd(d),ada=logs.find(l=>l.emp===e.id&&l.tgl===tgl);
+  if(ada)return res('#resIn',0,e.nama,'Sudah absen masuk hari ini pukul '+hm(new Date(ada.masuk))+'.');
+  const b=bukti(f);b.lok=lokO(lk);
+  const l={id:uid(),emp:e.id,tgl,masuk:d.toISOString(),pulang:null,...jamKerja(e),gaji:e.gaji,lb:e.lb,pot:cfg.pot,bMasuk:b};logs.push(l);save();cIn.start();const{late,pot}=calc(l);
+  res('#resIn',1,e.nama,'Absen masuk pukul <b>'+hm(d)+'</b>, '+tglPanjang(d)+(late?'. Terlambat '+late+' menit, gaji hari ini dipotong '+rp(pot)+'.':'. Tepat waktu.')+'<br><small>'+lokTxt(lk)+'</small>');
+ }finally{sibuk=false;cool=Date.now()+6000}}
+$('#goIn').onclick=()=>doIn();
+function autoStop(){clearInterval(autoT);autoT=null}
+/* mode otomatis: wajah yang sama harus cocok 3 kali berturut-turut (±3 detik) sebelum absen dicatat */
+function autoMasuk(){autoStop();autoT=setInterval(()=>{if(!$('#auto').checked||sibuk||Date.now()<cool)return;const f=cIn.grab();if(!f||f.tagName==='IMG')return;const e=match(f);
+  if(!e){lastId=null;cnt=0;return}if(e.id===lastId)cnt++;else{lastId=e.id;cnt=1}if(cnt>=3){cnt=0;lastId=null;doIn()}},1000)}
+async function doOut(kode){if(sibuk)return;sibuk=true;try{kode=String(kode).trim();const e=emps.find(x=>x.kode===kode);
+  if(!e)return res('#resOut',0,'Barcode tidak dikenali','Kode '+esc(kode)+' tidak terdaftar. Hubungi admin.');
+  const d=now(),l=terbuka(e.id,d);
+  if(!l){const s=logs.find(x=>x.emp===e.id&&x.tgl===ymd(d)&&x.pulang);return res('#resOut',0,e.nama,s?'Sudah absen pulang pukul '+hm(new Date(s.pulang))+'.':'Belum absen masuk hari ini.')}
+  let lk=null;try{lk=await lokasi()}catch(x){}
+  l.pulang=d.toISOString();l.bPulang={cara:'barcode',lok:lokO(lk)};save();const{blok,lembur}=calc(l);
+  res('#resOut',1,e.nama,'Pulang pukul <b>'+hm(d)+'</b>. '+(blok?'Lembur '+blok*2+' jam, tambahan '+rp(lembur)+'.':'Tidak ada lembur.')+(lk?'<br><small>'+lokTxt(lk)+'</small>':''));
+ }finally{sibuk=false;cool=Date.now()+5000;$('#bc').value=''}}
+$('#fBc').onsubmit=ev=>{ev.preventDefault();doOut($('#bc').value)};
+function scanStop(){clearInterval(scT);scT=null}
+function scanMulai(){scanStop();if(!('BarcodeDetector' in window)){$('#resOut').innerHTML='<div class="note">Browser ini tidak bisa memindai barcode lewat kamera. Pakai scanner USB atau ketik kodenya.</div>';return}
+  bd=bd||new BarcodeDetector({formats:['code_39']});let bz=false;
+  scT=setInterval(async()=>{if(bz||sibuk||Date.now()<cool)return;const f=cOut.grab();if(!f)return;bz=true;try{const r=await bd.detect(f);if(r.length)doOut(r[0].rawValue)}catch(e){}bz=false},500)}
+
+/* Data saya (karyawan) */
+$('#goMe').onclick=()=>{const f=cMe.grab();if(!f)return toast('Kamera belum siap.');const e=match(f);if(!e)return gagal('#resMe');
+  cMe.stop();$('#resMe').innerHTML='';$('#myAsk').classList.add('hid');dataSaya(e,ymd(now()).slice(0,7))};
+function dataSaya(e,bln){const s=saldoOf(e.id),n=v=>'<td class="n">'+v+'</td>';
+  const L=logs.filter(l=>l.emp===e.id&&l.tgl.startsWith(bln)).sort((a,b)=>b.tgl.localeCompare(a.tgl));
+  const T=tfs.filter(t=>t.emp===e.id).sort((a,b)=>b.dibuat.localeCompare(a.dibuat));
+  $('#myData').innerHTML='<div class="card"><div class="head"><h2>'+esc(e.nama)+'</h2><button type="button" class="ghost sm" id="myClose">Tutup</button></div>Saldo gaji belum ditransfer<span class="bal">'+rp(s.sisa)+'</span><p style="margin:0">Total pendapatan '+rp(s.dapat)+' · sudah ditransfer '+rp(s.bayar)+'<br>Rekening: '+esc(rek(e))+'</p></div>'+
+  '<div class="card"><h2>Riwayat hari kerja</h2><label class="f" for="myBln">Bulan</label><input type="month" id="myBln" value="'+bln+'"><p style="margin:10px 0">'+L.length+' hari kerja di bulan ini.</p><div class="tw">'+(L.length?'<table><thead><tr><th>Tanggal</th><th>Masuk</th><th>Pulang</th><th class="n">Terlambat</th><th class="n">Lembur</th><th class="n">Pendapatan</th></tr></thead><tbody>'+
+   L.map(l=>{const c=calc(l);return'<tr><td>'+l.tgl+'</td><td>'+hm(new Date(l.masuk))+'</td><td>'+(l.pulang?hm(new Date(l.pulang)):'Belum pulang')+'</td>'+n(c.late?c.late+' mnt (−'+rp(c.pot)+')':'-')+n(c.blok?c.blok*2+' jam':'-')+n(l.pulang?rp(l.gaji+c.lembur-c.pot):'Menunggu absen pulang')+'</tr>'}).join('')+'</tbody></table>':'<div class="empty">Belum ada absen di bulan ini.</div>')+'</div></div>'+
+  '<div class="card"><h2>Grafik kehadiran Senin–Sabtu</h2>'+LEG+grafSvg(L)+'</div>'+
+  '<div class="card"><h2>Transfer gaji untuk saya</h2><div class="tw">'+(T.length?'<table><thead><tr><th>Tanggal</th><th>Cara bayar</th><th>Referensi</th><th class="n">Jumlah</th><th>Status</th></tr></thead><tbody>'+
+   T.map(t=>'<tr class="'+(t.batal?'batal':'')+'"><td>'+t.tgl+'</td><td>'+esc(t.cara)+'</td><td>'+esc(t.ref||'-')+'</td>'+n(rp(t.jml))+'<td>'+(t.batal?'Dibatalkan':'Tercatat')+'</td></tr>').join('')+'</tbody></table>':'<div class="empty">Belum ada transfer.</div>')+'</div></div>';
+  $('#myClose').onclick=()=>tab('kary','saya');$('#myBln').onchange=ev=>dataSaya(e,ev.target.value||bln)}
+
+/* Transfer gaji (admin) */
+let tfEmp=null;
+const trxBulan=()=>{const b=$('#blnTf').value;return tfs.filter(t=>t.tgl.startsWith(b)).sort((a,c)=>(c.tgl+c.dibuat).localeCompare(a.tgl+a.dibuat))};
+function transfer(){const n=v=>'<td class="n">'+v+'</td>';
+  $('#saldo').innerHTML=emps.length?'<table><thead><tr><th>Nama</th><th class="n">Saldo</th><th>Aksi</th><th>Rekening</th><th class="n">Pendapatan</th><th class="n">Sudah ditransfer</th></tr></thead><tbody>'+
+   emps.map(e=>{const s=saldoOf(e.id);return'<tr><td>'+esc(e.nama)+'</td>'+n('<b>'+rp(s.sisa)+'</b>')+'<td><button type="button" class="sm" data-tf="'+e.id+'"'+(s.sisa>0?'':' disabled')+'>Transfer</button></td><td>'+esc(rek(e))+'</td>'+n(rp(s.dapat))+n(rp(s.bayar))+'</tr>'}).join('')+'</tbody></table>':'<div class="empty">Belum ada karyawan.</div>';
+  const T=trxBulan(),jml=T.reduce((p,t)=>p+(t.batal?0:t.jml),0);
+  $('#trx').innerHTML=T.length?'<table><thead><tr><th>Tanggal</th><th>No. transaksi</th><th>Nama</th><th class="n">Jumlah</th><th>Rekening</th><th>Cara bayar</th><th>Referensi</th><th>Status</th></tr></thead><tbody>'+
+   T.map(t=>'<tr class="'+(t.batal?'batal':'')+'"><td>'+t.tgl+'</td><td>'+esc(t.no)+'</td><td>'+esc(t.nama)+'</td>'+n(rp(t.jml))+'<td>'+esc(rek(t))+'</td><td>'+esc(t.cara)+'</td><td>'+esc(t.ref||'-')+'</td><td>'+(t.batal?'Dibatalkan':'<button type="button" class="del sm" data-batal="'+esc(t.id)+'">Batalkan</button>')+'</td></tr>').join('')+
+   '</tbody><tfoot><tr><td colspan="3">Total tercatat</td>'+n(rp(jml))+'<td colspan="4"></td></tr></tfoot></table>':'<div class="empty">Belum ada transaksi.</div>'}
+$('#saldo').onclick=ev=>{const b=ev.target.closest('button[data-tf]');if(!b||!isAdmin)return;tfEmp=empBy(+b.dataset.tf);const s=saldoOf(tfEmp.id).sisa;
+  $('#tfT').textContent='Transfer gaji: '+tfEmp.nama;$('#tfInfo').textContent='Rekening: '+rek(tfEmp)+'. Saldo tersedia '+rp(s)+'.';
+  $('#tfJml').value=s;$('#tfJml').max=s;$('#tfTgl').value=ymd(now());$('#tfRef').value='';$('#fTf').classList.remove('hid');$('#fTf').scrollIntoView()};
+$('#tfCancel').onclick=()=>$('#fTf').classList.add('hid');
+$('#fTf').onsubmit=ev=>{ev.preventDefault();if(!isAdmin||!tfEmp)return;const jml=+$('#tfJml').value,sisa=saldoOf(tfEmp.id).sisa,tgl=$('#tfTgl').value;
+  if(!Number.isInteger(jml)||jml<=0||jml>sisa)return toast('Jumlah harus antara Rp 1 dan '+rp(sisa)+'.');
+  if(!confirm('Catat transfer '+rp(jml)+' ke '+tfEmp.nama+' ('+rek(tfEmp)+')?'))return;
+  tfs.push({id:uid(),no:'TRX-'+tgl.replace(/-/g,'')+'-'+String(tfs.length+1).padStart(3,'0'),emp:tfEmp.id,nama:tfEmp.nama,bank:tfEmp.bank||'',rek:tfEmp.rek||'',jml,tgl,cara:$('#tfCara').value,ref:$('#tfRef').value.trim(),dibuat:new Date().toISOString(),batal:false});
+  tfEmp=null;save();$('#fTf').classList.add('hid');$('#blnTf').value=tgl.slice(0,7);transfer();toast('Transfer tercatat.')};
+$('#trx').onclick=ev=>{const b=ev.target.closest('button[data-batal]');if(!b||!isAdmin)return;
+  if(confirm('Batalkan catatan transfer ini? Jumlahnya kembali ke saldo karyawan. Uang yang sudah terkirim tidak ikut ditarik.')){tfs.find(t=>t.id===b.dataset.batal).batal=true;save();$('#fTf').classList.add('hid');transfer()}};
+$('#blnTf').onchange=transfer;
+
+/* Rekap (admin) */
+function dataRekap(){const b=$('#bln');if(!b.value)b.value=ymd(now()).slice(0,7);
+  const L=logs.filter(l=>l.tgl.startsWith(b.value)&&empBy(l.emp)).sort((a,c)=>a.masuk.localeCompare(c.masuk));
+  const rows=emps.map(e=>{let h=0,tl=0,mnt=0,bl=0,pk=0,lm=0,pt=0;const hari=new Set();L.filter(l=>l.emp===e.id).forEach(l=>{const c=calc(l);hari.add(l.tgl);if(c.late){tl++;mnt+=c.late}bl+=c.blok;pk+=l.gaji;lm+=c.lembur;pt+=c.pot});h=hari.size;
+    const bn=bonusBln(e.id,b.value);return{e,h,tl,mnt,jam:bl*2,pk,lm,pt,bn,tot:pk+lm-pt+bn}});
+  return{bln:b.value,L,rows}}
+const total=(r,k)=>r.reduce((p,x)=>p+x[k],0);
+function rekap(){grafik();const{L:semua,rows}=dataRekap(),n=v=>'<td class="n">'+v+'</td>';
+  const pilih=$('#fil').value;$('#fil').innerHTML='<option value="">Semua karyawan</option>'+emps.map(e=>'<option value="'+e.id+'">'+esc(e.nama)+'</option>').join('');
+  $('#fil').value=empBy(+pilih)?pilih:'';const L=$('#fil').value?semua.filter(l=>l.emp===+$('#fil').value):semua;
+  $('#sum').innerHTML=emps.length?'<table><thead><tr><th>Nama</th><th class="n">Hari kerja</th><th class="n">Terlambat</th><th class="n">Lembur (jam)</th><th class="n">Tarif kini/hari</th><th class="n">Gaji pokok</th><th class="n">Uang lembur</th><th class="n">Potongan telat</th><th class="n">Bonus</th><th class="n">Total gaji</th></tr></thead><tbody>'+
+   rows.map(r=>'<tr><td>'+esc(r.e.nama)+'</td>'+n(r.h)+n(r.tl+' kali')+n(r.jam)+n(rp(r.e.gaji))+n(rp(r.pk))+n(rp(r.lm))+n(r.pt?'−'+rp(r.pt):'-')+n(r.bn?rp(r.bn):'-')+n('<b>'+rp(r.tot)+'</b>')+'</tr>').join('')+
+   '</tbody><tfoot><tr><td>Total</td>'+n(total(rows,'h'))+n(total(rows,'tl')+' kali')+n(total(rows,'jam'))+n('')+n(rp(total(rows,'pk')))+n(rp(total(rows,'lm')))+n(rp(total(rows,'pt')))+n(rp(total(rows,'bn')))+n(rp(total(rows,'tot')))+'</tr></tfoot></table>':'<div class="empty">Belum ada karyawan. Pilih + Tambah karyawan.</div>';
+  $('#log').innerHTML=L.length?'<table><thead><tr><th>Tanggal</th><th>Nama</th><th>Masuk</th><th>Pulang</th><th class="n">Terlambat</th><th class="n">Lembur</th><th>Aksi</th></tr></thead><tbody>'+
+   L.slice().reverse().map(l=>{const c=calc(l);return'<tr><td>'+l.tgl+'</td><td>'+esc(empBy(l.emp).nama)+'</td><td>'+foto(l.bMasuk)+hm(new Date(l.masuk))+' '+lokA(l.bMasuk)+'</td><td>'+(l.pulang?foto(l.bPulang)+hm(new Date(l.pulang))+' '+lokA(l.bPulang):'Belum pulang')+'</td>'+n(c.late?c.late+' mnt (−'+rp(c.pot)+')':'-')+n(c.blok?c.blok*2+' jam':'-')+'<td><button type="button" class="ghost sm" data-edit="'+esc(l.id)+'">Edit</button> <button type="button" class="del sm" data-hapus="'+esc(l.id)+'">Hapus</button></td></tr>'}).join('')+'</tbody></table>':'<div class="empty">Belum ada absen di bulan ini.</div>'}
+const foto=b=>b?(b.foto?'<img class="bukti" src="'+esc(b.foto)+'" alt="Bukti '+esc(b.cara)+'" title="'+esc(b.cara)+'">':'')+(b.cara==='unggah'?'<small>(unggah) </small>':b.cara==='barcode'?'<small>(barcode) </small>':''):'';
+$('#fil').onchange=()=>rekap();
+$('#bln').onchange=()=>{$('#fLog').classList.add('hid');rekap()};
+
+/* Koreksi absen */
+let editLog=null;
+function bukaLog(l){if(!emps.length)return toast('Belum ada karyawan.');editLog=l;
+  $('#lEmp').innerHTML=emps.map(e=>'<option value="'+e.id+'">'+esc(e.nama)+'</option>').join('');$('#lEmp').disabled=!!l;
+  if(l){$('#lEmp').value=l.emp;$('#lTgl').value=l.tgl;$('#lIn').value=hm(new Date(l.masuk));$('#lOut').value=l.pulang?hm(new Date(l.pulang)):'';$('#lGaji').value=l.gaji;$('#lLb').value=l.lb}
+  else{$('#lTgl').value=ymd(now());$('#lIn').value=jamKerja(emps[0]).jm;$('#lOut').value='';tarif()}
+  $('#fLog').classList.remove('hid');$('#fLog').scrollIntoView({block:'nearest'})}
+function tarif(){const e=empBy(+$('#lEmp').value);$('#lGaji').value=e.gaji;$('#lLb').value=e.lb}
+$('#lEmp').onchange=tarif;
+$('#addLog').onclick=()=>bukaLog(null);
+$('#lCancel').onclick=()=>$('#fLog').classList.add('hid');
+$('#log').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;
+  if(b.dataset.edit)bukaLog(logs.find(l=>l.id===b.dataset.edit));
+  else if(confirm('Hapus data absen ini?')){logs=logs.filter(l=>l.id!==b.dataset.hapus);save();$('#fLog').classList.add('hid');rekap()}};
+$('#fLog').onsubmit=ev=>{ev.preventDefault();if(!isAdmin)return;
+  const id=+$('#lEmp').value,tgl=$('#lTgl').value,mi=$('#lIn').value,po=$('#lOut').value;
+  if(logs.some(l=>l!==editLog&&l.emp===id&&l.tgl===tgl))return toast('Karyawan ini sudah punya absen di tanggal tersebut.');
+  const m=at(tgl,mi);let p=null;if(po){p=at(tgl,po);if(p<=m)p.setDate(p.getDate()+1)}
+  const isi={tgl,masuk:m.toISOString(),pulang:p?p.toISOString():null,gaji:+$('#lGaji').value,lb:+$('#lLb').value};
+  /* bukti foto tidak berlaku lagi bila waktunya diubah manual */
+  if(editLog){const beda=(a,b)=>!a||!b||Math.abs(new Date(a)-b)>=1000;if(beda(editLog.masuk,m))delete editLog.bMasuk;if(beda(editLog.pulang,p))delete editLog.bPulang}
+  if(editLog)Object.assign(editLog,isi);else logs.push({id:uid(),emp:id,...isi,...jamKerja(empBy(id)),pot:cfg.pot});
+  save();$('#bln').value=tgl.slice(0,7);$('#fLog').classList.add('hid');rekap();toast('Absen tersimpan.')};
+
+/* Karyawan */
+let editEmp=null;
+function empList(){$('#empList').innerHTML=emps.length?emps.map(e=>{const j=jamKerja(e);return'<div class="emp"><img src="'+esc(e.foto)+'" alt=""><div><b>'+esc(e.nama)+'</b><small>'+esc(e.wa)+' · '+esc(e.alamat)+'</small><small>'+rp(e.gaji)+'/hari · lembur '+rp(e.lb)+'/2 jam · '+(e.shift==='sore'?'Sore–Malam ':'Pagi–Siang ')+j.jm+'–'+j.jp+'</small><small>Rekening: '+esc(rek(e))+' · Saldo: '+rp(saldoOf(e.id).sisa)+'</small></div><button type="button" class="ghost sm" data-bar="'+e.id+'">Barcode</button><button type="button" class="ghost sm" data-edit="'+e.id+'">Edit</button><button type="button" class="del sm" data-hapus="'+e.id+'">Hapus</button></div>'}).join(''):'<div class="empty">Belum ada karyawan. Pilih + Tambah karyawan.</div>'}
+$('#empList').onclick=ev=>{const b=ev.target.closest('button');if(!b||!isAdmin)return;
+  if(b.dataset.bar){showBar(empBy(+b.dataset.bar));return}
+  if(b.dataset.edit){editEmp=empBy(+b.dataset.edit);const e=editEmp;$('#eNama').value=e.nama;$('#eAlamat').value=e.alamat;$('#eGaji').value=e.gaji;$('#eLb').value=e.lb;$('#eShift').value=e.shift||'pagi';$('#eBank').value=e.bank||'';$('#eRek').value=e.rek||'';$('#fEmp').classList.remove('hid');$('#fEmp').scrollIntoView()}
+  else{const id=+b.dataset.hapus,s=saldoOf(id).sisa;if(!confirm((s>0?'Karyawan ini masih punya saldo '+rp(s)+' yang belum ditransfer. ':'')+'Hapus karyawan ini beserta seluruh data absennya? Riwayat transfer tetap disimpan.'))return;emps=emps.filter(e=>e.id!==id);logs=logs.filter(l=>l.emp!==id);save();$('#fEmp').classList.add('hid');empList()}};
+$('#eCancel').onclick=()=>$('#fEmp').classList.add('hid');
+$('#fEmp').onsubmit=ev=>{ev.preventDefault();if(!isAdmin||!editEmp)return;const nama=$('#eNama').value.trim(),alamat=$('#eAlamat').value.trim();if(!nama||!alamat)return toast('Nama dan alamat wajib diisi.');
+  Object.assign(editEmp,{nama,alamat,gaji:+$('#eGaji').value,lb:+$('#eLb').value,shift:$('#eShift').value,bank:$('#eBank').value.trim(),rek:$('#eRek').value.trim()});save();$('#fEmp').classList.add('hid');empList();toast('Data karyawan diperbarui.')};
+
+/* Pengaturan */
+function fillSet(){$('#sGaji').value=cfg.gaji;$('#sLb').value=cfg.lb;$('#sPm').value=cfg.pm;$('#sPp').value=cfg.pp;$('#sSm').value=cfg.sm;$('#sSp').value=cfg.sp;$('#sPot').value=cfg.pot;$('#sBonus').value=cfg.bonus;$('#sMin').value=cfg.min;$('#sTh').value=cfg.th;$('#sSim').value=cfg.sim;$('#sPin').value=''}
+$('#fSet').onsubmit=ev=>{ev.preventDefault();if(!isAdmin)return;const p=$('#sPin').value;if(p&&!pinOk(p))return toast('PIN baru harus 4–8 angka.');
+  Object.assign(cfg,{gaji:+$('#sGaji').value,lb:+$('#sLb').value,pm:$('#sPm').value,pp:$('#sPp').value,sm:$('#sSm').value,sp:$('#sSp').value,pot:+$('#sPot').value,bonus:+$('#sBonus').value,min:+$('#sMin').value,th:+$('#sTh').value,sim:$('#sSim').value});if(p)cfg.pin=hash(p);
+  save();tick();$('#sPin').value='';toast('Pengaturan disimpan.')};
+$('#reset').onclick=()=>{if(isAdmin&&confirm('Hapus SEMUA karyawan, absensi, dan riwayat transfer? Tindakan ini tidak bisa dibatalkan.')){emps=[];logs=[];tfs=[];save();toast('Semua data dihapus.')}};
+
+/* Grafik kehadiran Senin-Sabtu */
+const LEG='<div class="leg"><span><i style="background:var(--ac)"></i>Tepat waktu</span><span><i style="background:var(--warn)"></i>Terlambat</span></div>';
+function grafSvg(L){const H=[0,0,0,0,0,0],T=[0,0,0,0,0,0],hr=['Sen','Sel','Rab','Kam','Jum','Sab'];
+  L.forEach(l=>{const d=new Date(l.tgl+'T00:00').getDay();if(d)(calc(l).late?T:H)[d-1]++});
+  const mx=Math.max(4,...H.map((v,i)=>v+T[i])),y=v=>210-v/mx*190,g=560/6;
+  let o='<svg viewBox="0 0 600 240" width="100%" role="img" aria-label="Kehadiran per hari: '+hr.map((h,i)=>h+' '+(H[i]+T[i])+', '+T[i]+' terlambat').join('; ')+'">';
+  [0,.5,1].forEach(f=>{const v=Math.round(mx*f);o+='<line class="gl" x1="36" x2="596" y1="'+y(v)+'" y2="'+y(v)+'"/><text class="gt" x="30" y="'+(y(v)+4)+'" text-anchor="end">'+v+'</text>'});
+  hr.forEach((h,i)=>{const x=40+i*g+g/2-22,a=H[i],b=T[i];
+    o+='<rect class="gb1" x="'+x+'" y="'+y(a)+'" width="44" height="'+(210-y(a))+'" rx="3"/><rect class="gb2" x="'+x+'" y="'+y(a+b)+'" width="44" height="'+(y(a)-y(a+b))+'" rx="3"/><text class="gt" x="'+(x+22)+'" y="'+(y(a+b)-5)+'" text-anchor="middle">'+(a+b)+'</text><text class="gt" x="'+(x+22)+'" y="230" text-anchor="middle">'+h+'</text>'});
+  return o+'</svg>'}
+function grafik(){const{L}=dataRekap(),p=$('#grK').value;$('#grK').innerHTML='<option value="">Semua karyawan</option>'+emps.map(e=>'<option value="'+e.id+'">'+esc(e.nama)+'</option>').join('');$('#grK').value=empBy(+p)?p:'';
+  const k=$('#grK').value;$('#graf').innerHTML=grafSvg(k?L.filter(l=>l.emp===+k):L)}
+$('#grK').onchange=grafik;
+/* Barcode Code 39 (angka) untuk kartu karyawan */
+const C39={'0':'000110100','1':'100100001','2':'001100001','3':'101100000','4':'000110001','5':'100110000','6':'001110000','7':'000100101','8':'100100100','9':'001100100','*':'010010100'};
+function code39(k){let x=10,r='';for(const ch of '*'+k+'*'){[...C39[ch]].forEach((w,i)=>{const wd=w==='1'?6:2;if(i%2===0)r+='<rect x="'+x+'" y="10" width="'+wd+'" height="70"/>';x+=wd});x+=2}
+  return'<svg viewBox="0 0 '+(x+8)+' 90" width="100%" style="max-width:360px" role="img" aria-label="Barcode '+k+'" fill="#000"><rect width="100%" height="100%" fill="#fff"/>'+r+'</svg>'}
+function showBar(e){const b=$('#fBar');b.innerHTML='<h2>Kartu barcode: '+esc(e.nama)+'</h2>'+code39(e.kode)+'<p style="margin-top:8px">Kode: <b>'+e.kode+'</b>. Dipakai untuk absen pulang.</p><div class="acts"><button type="button" id="bPrint">Cetak</button><button type="button" class="ghost" id="bClose">Tutup</button></div>';
+  b.classList.remove('hid');b.scrollIntoView({block:'nearest'});$('#bClose').onclick=()=>b.classList.add('hid');$('#bPrint').onclick=()=>{document.body.classList.add('pbar');print()}}
+addEventListener('afterprint',()=>document.body.classList.remove('pbar'));
+
+/* ===== Ekspor Excel (.xlsx) tanpa library ===== */
+const CRC=Array.from({length:256},(_,n)=>{for(let k=0;k<8;k++)n=n&1?0xedb88320^(n>>>1):n>>>1;return n>>>0});
+const crc32=b=>{let c=~0;for(const x of b)c=CRC[(c^x)&255]^(c>>>8);return~c>>>0};
+function zip(files){const enc=new TextEncoder(),out=[],dir=[];let off=0;const le=(...a)=>{const b=[];a.forEach(([v,n])=>{for(let i=0;i<n;i++)b.push((v>>>(8*i))&255)});return new Uint8Array(b)};
+  for(const[name,text]of files){const nm=enc.encode(name),d=enc.encode(text),c=crc32(d);
+    const com=[[20,2],[0x800,2],[0,2],[0,2],[0x21,2],[c,4],[d.length,4],[d.length,4],[nm.length,2],[0,2]];
+    out.push(le([0x04034b50,4],...com),nm,d);dir.push(le([0x02014b50,4],[20,2],...com,[0,2],[0,2],[0,2],[0,4],[off,4]),nm);off+=30+nm.length+d.length}
+  const size=dir.reduce((p,b)=>p+b.length,0);
+  return new Blob([...out,...dir,le([0x06054b50,4],[0,2],[0,2],[files.length,2],[files.length,2],[size,4],[off,4],[0,2])],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})}
+const xe=s=>esc(String(s).replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g,''));
+const col=i=>String.fromCharCode(65+i);
+/* sel: [nilai, gaya, rumus] ; gaya 1 judul, 2 kepala, 3 teks, 4 angka, 5 rupiah, 6-8 versi tebal */
+function sheet(rows,widths){const last=col(widths.length-1);
+  const data=rows.map((r,i)=>'<row r="'+(i+1)+'">'+r.map((c,j)=>{if(!c)return'';const[v,s,f]=c,ref=col(j)+(i+1);
+    if(f)return'<c r="'+ref+'" s="'+s+'"><f>'+f+'</f><v>'+v+'</v></c>';
+    if(typeof v==='number')return'<c r="'+ref+'" s="'+s+'"><v>'+v+'</v></c>';
+    return'<c r="'+ref+'" s="'+s+'" t="inlineStr"><is><t xml:space="preserve">'+xe(v)+'</t></is></c>'}).join('')+'</row>').join('');
+  return'<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><sheetViews><sheetView workbookViewId="0"><pane ySplit="4" topLeftCell="A5" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="15"/><cols>'+
+    widths.map((w,i)=>'<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>').join('')+'</cols><sheetData>'+data+'</sheetData><mergeCells count="2"><mergeCell ref="A1:'+last+'1"/><mergeCell ref="A2:'+last+'2"/></mergeCells><printOptions horizontalCentered="1"/><pageMargins left="0.4" right="0.4" top="0.6" bottom="0.6" header="0.3" footer="0.3"/><pageSetup paperSize="9" orientation="landscape" fitToWidth="1" fitToHeight="0"/><headerFooter><oddFooter>&amp;RHalaman &amp;P dari &amp;N</oddFooter></headerFooter></worksheet>'}
+function buatExcel(){const{bln,L,rows}=dataRekap(),periode='Periode: '+new Date(bln+'-01T00:00').toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+  const head=a=>a.map(t=>[t,2]);
+  const A=[[['REKAP GAJI KARYAWAN',1]],[[periode,0]],[],head(['No','Nama','No. WhatsApp','Hari kerja','Terlambat (kali)','Lembur (jam)','Tarif kini per hari','Tarif kini lembur/2 jam','Gaji pokok','Uang lembur','Potongan telat','Bonus','Total gaji','Tanda tangan'])];
+  rows.forEach((r,i)=>{const n=i+5;A.push([[i+1,4],[r.e.nama,3],[r.e.wa,3],[r.h,4],[r.tl,4],[r.jam,4],[r.e.gaji,5],[r.e.lb,5],[r.pk,5],[r.lm,5],[r.pt,5],[r.bn,5],[r.tot,5,'I'+n+'+J'+n+'-K'+n+'+L'+n],['',3]])});
+  const end=4+rows.length,S=(c,k,s)=>[total(rows,k),s,'SUM('+c+'5:'+c+end+')'];
+  A.push([['',6],['TOTAL',6],['',6],S('D','h',7),S('E','tl',7),S('F','jam',7),['',6],['',6],S('I','pk',8),S('J','lm',8),S('K','pt',8),S('L','bn',8),S('M','tot',8),['',6]]);
+  const B=[[['RIWAYAT ABSEN',1]],[[periode,0]],[],head(['No','Tanggal','Nama','Jadwal','Jam masuk','Jam pulang','Terlambat (menit)','Lembur (jam)','Gaji hari itu','Uang lembur','Potongan telat','Lokasi masuk'])];
+  L.forEach((l,i)=>{const c=calc(l);B.push([[i+1,4],[l.tgl,3],[empBy(l.emp).nama,3],[l.jm+' - '+l.jp,3],[hm(new Date(l.masuk)),3],[l.pulang?ymd(new Date(l.pulang))===l.tgl?hm(new Date(l.pulang)):ymd(new Date(l.pulang))+' '+hm(new Date(l.pulang)):'Belum pulang',3],[c.late,4],[c.blok*2,4],[l.gaji,5],[c.lembur,5],[c.pot,5],[l.bMasuk&&l.bMasuk.lok?l.bMasuk.lok.lat+', '+l.bMasuk.lok.lng:'-',3]])});
+  const bt=$('#blnTf').value,TR=trxBulan().reverse();
+  const C=[[['RIWAYAT TRANSFER GAJI',1]],[[bt?'Periode: '+new Date(bt+'-01T00:00').toLocaleDateString('id-ID',{month:'long',year:'numeric'}):'Semua periode',0]],[],head(['No','Tanggal','No. transaksi','Nama','Rekening','Cara bayar','Referensi','Jumlah','Status'])];
+  TR.forEach((t,i)=>C.push([[i+1,4],[t.tgl,3],[t.no,3],[t.nama,3],[rek(t),3],[t.cara,3],[t.ref,3],[t.jml,5],[t.batal?'Dibatalkan':'Tercatat',3]]));
+  const tot=TR.reduce((p,t)=>p+(t.batal?0:t.jml),0),ak=4+TR.length;
+  C.push([['',6],['TOTAL',6],['',6],['',6],['',6],['',6],['',6],[tot,8,TR.length?'SUMIF(I5:I'+ak+',"Tercatat",H5:H'+ak+')':null],['',6]]);
+  const X='<?xml version="1.0" encoding="UTF-8"?>',R='http://schemas.openxmlformats.org/officeDocument/2006/relationships',CT='application/vnd.openxmlformats-officedocument.spreadsheetml.';
+  const font=(b,z)=>'<font>'+(b?'<b/>':'')+'<sz val="'+z+'"/><name val="Calibri"/></font>';
+  const xf=(num,f,fill,bd,al)=>'<xf numFmtId="'+num+'" fontId="'+f+'" fillId="'+fill+'" borderId="'+bd+'" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1"'+(al?' applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>':'/>');
+  const styles=X+'<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="164" formatCode="&quot;Rp&quot; #,##0"/></numFmts><fonts count="3">'+font(0,11)+font(1,14)+font(1,11)+'</fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFD9EDE8"/></patternFill></fill></fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left style="thin"/><right style="thin"/><top style="thin"/><bottom style="thin"/><diagonal/></border></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="9">'+
+    xf(0,0,0,0)+xf(0,1,0,0,1)+xf(0,2,2,1,1)+xf(0,0,0,1)+xf(3,0,0,1)+xf(164,0,0,1)+xf(0,2,2,1)+xf(3,2,2,1)+xf(164,2,2,1)+'</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+  return zip([
+    ['[Content_Types].xml',X+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="'+CT+'sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="'+CT+'styles+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="'+CT+'worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="'+CT+'worksheet+xml"/><Override PartName="/xl/worksheets/sheet3.xml" ContentType="'+CT+'worksheet+xml"/></Types>'],
+    ['_rels/.rels',X+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="'+R+'/officeDocument" Target="xl/workbook.xml"/></Relationships>'],
+    ['xl/workbook.xml',X+'<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="'+R+'"><sheets><sheet name="Rekap Gaji" sheetId="1" r:id="rId1"/><sheet name="Riwayat Absen" sheetId="2" r:id="rId2"/><sheet name="Transfer Gaji" sheetId="3" r:id="rId4"/></sheets><definedNames><definedName name="_xlnm.Print_Titles" localSheetId="0">\'Rekap Gaji\'!$4:$4</definedName><definedName name="_xlnm.Print_Titles" localSheetId="1">\'Riwayat Absen\'!$4:$4</definedName><definedName name="_xlnm.Print_Titles" localSheetId="2">\'Transfer Gaji\'!$4:$4</definedName></definedNames><calcPr fullCalcOnLoad="1"/></workbook>'],
+    ['xl/_rels/workbook.xml.rels',X+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="'+R+'/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="'+R+'/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="'+R+'/styles" Target="styles.xml"/><Relationship Id="rId4" Type="'+R+'/worksheet" Target="worksheets/sheet3.xml"/></Relationships>'],
+    ['xl/styles.xml',styles],
+    ['xl/worksheets/sheet1.xml',sheet(A,[5,26,16,9,11,9,15,15,16,15,15,15,17,18])],
+    ['xl/worksheets/sheet2.xml',sheet(B,[5,13,26,16,12,21,12,10,15,15,15,24])],
+    ['xl/worksheets/sheet3.xml',sheet(C,[5,13,21,26,24,16,22,16,13])]])}
+$('#xls').onclick=$('#xls2').onclick=()=>{if(!isAdmin)return;if(!emps.length&&!tfs.length)return toast('Belum ada data untuk direkap.');
+  const a=document.createElement('a');a.href=URL.createObjectURL(buatExcel());a.download='rekap-gaji-'+dataRekap().bln+'.xlsx';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)};
+
+function tick(){const d=now();$$('.clk').forEach(x=>x.textContent=hm(d));$$('.dt').forEach(x=>x.textContent=tglPanjang(d)+(cfg.sim?' (uji coba)':''))}
+setInterval(tick,1000);tick();
+</script>
+</body>
+</html>
